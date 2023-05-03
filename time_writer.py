@@ -27,16 +27,18 @@ def get_file_groups(path):
 
     for filename in os.listdir(path):
         # 确保是文件，跳过目录
-        if os.path.isfile(os.path.join(path, filename)):
-            # 分离文件名和扩展名
-            name, ext = os.path.splitext(filename)
-            ext = ext.lstrip('.')
+        if os.path.isdir(os.path.join(path, filename)):
+            continue
 
-            # 将文件添加到组中
-            if name in file_groups:
-                file_groups[name] = file_groups[name] + (ext,)
-            else:
-                file_groups[name] = (ext,)
+        # 分离文件名和扩展名
+        name, ext = os.path.splitext(filename)
+        ext = ext.lstrip('.')
+
+        # 将文件添加到组中
+        if name in file_groups:
+            file_groups[name] = file_groups[name] + (ext,)
+        else:
+            file_groups[name] = (ext,)
 
     return file_groups
 
@@ -44,7 +46,7 @@ def get_file_groups(path):
 def time_writer(path, time_zone):
     for file in tqdm.tqdm(os.listdir(path)):
         sub_path = os.path.join(path, file)
-        if not os.path.isdir(sub_path):
+        if os.path.isfile(sub_path):
             continue
 
         file_group_dict = get_file_groups(sub_path)
